@@ -1,18 +1,22 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+
+import Log from './screen/Log/Index';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx and make me beautiful 🧑‍🎨</Text>
-    </View>
+    <>
+      <StatusBar style='light' />
+      <View style={styles.container}>
+        <Log />
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#151329',
   },
 });
