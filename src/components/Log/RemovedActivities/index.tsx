@@ -15,7 +15,11 @@ export default function RemovedActivitiesProps({
   onAddActivity,
 }: RemovedActivitiesProps) {
   const removedActivitiesUI = removedActivities.map((removedActivity) => (
-    <RemovedActivity key={removedActivity.id} />
+    <RemovedActivity
+      key={removedActivity.id}
+      id={removedActivity.id}
+      onAddActivity={onAddActivity}
+    />
   ));
 
   return (

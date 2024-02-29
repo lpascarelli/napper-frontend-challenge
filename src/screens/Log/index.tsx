@@ -34,6 +34,22 @@ export default function Log() {
     setRemovedActivities(updatedRemovedActivities);
   };
 
+  const addActivityByIdHandler = (id: string) => {
+    const updatedActivities = activities;
+    const updatedRemovedActivities = removedActivities.filter(
+      (removedActivity) => {
+        if (removedActivity.id === id) {
+          updatedActivities.push(removedActivity);
+        } else {
+          return removedActivity;
+        }
+      }
+    );
+
+    setActivities(updatedActivities);
+    setRemovedActivities(updatedRemovedActivities);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <ActionsBar
@@ -44,7 +60,7 @@ export default function Log() {
         <RemovedActivities
           isSavingMode={isSavingMode}
           removedActivities={removedActivities}
-          onAddActivity={() => {}}
+          onAddActivity={addActivityByIdHandler}
         />
       )}
       <Activities

@@ -1,35 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  runOnJS,
 } from 'react-native-reanimated';
 
-const OpacityExample = () => {
-  // This shared value will hold the opacity value.
-  const opacity = useSharedValue(1);
+const AnimatedComponent = ({
+  onFinishedHiding,
+}: {
+  onFinishedHiding: () => void;
+}) => {
+  // Shared value for opacity and translate Y for the animation
+  const translateY = useSharedValue(-100); // Start above the view
+  const opacity = useSharedValue(0);
 
-  // Function to trigger the animation.
-  const handlePress = () => {
-    // This will animate the opacity to 0 over 500 milliseconds.
-    opacity.value = withTiming(0, { duration: 500 });
-  };
-
-  // Animated styles that depend on the shared value.
-  const animatedStyles = useAnimatedStyle(() => {
+  // Animated style to apply to the component
+  const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: opacity.value,
+      transform: [{ translateY: translateY.value }],
     };
   });
 
+  // Animate in when component mounts
+  useEffect(() => {
+    translateY.value = withTiming(0, { duration: 500 }); // Animate to view from top
+    opacity.value = withTiming(1, { duration: 500 });
+  }, []);
+
+  // Animate out function
+  const animateOut = () => {
+    translateY.value = withTiming(-100, { duration: 500 }); // Move out of view upwards
+    opacity.value = withTiming(0, { duration: 500 }, () => {
+      runOnJS(onFinishedHiding)(); // Call the passed function when animation is done
+    });
+  };
+
+  return (
+    <Animated.View style={[styles.animatedComponent, animatedStyle]}>
+      {/* Your component content here */}
+      <Button title='Hide' onPress={animateOut} />
+    </Animated.View>
+  );
+};
+
+const Example = () => {
+  const [showComponent, setShowComponent] = useState(false);
+
+  const toggleComponent = () => {
+    setShowComponent(!showComponent);
+  };
+
+  const handleFinishedHiding = () => {
+    setShowComponent(false);
+  };
+
   return (
     <View style={styles.container}>
-      {/* Animated View */}
-      <Animated.View style={[styles.box, animatedStyles]} />
-
-      {/* Button to trigger the animation */}
-      <Button title='Fade Out' onPress={handlePress} />
+      {showComponent && (
+        <AnimatedComponent onFinishedHiding={handleFinishedHiding} />
+      )}
+      <Button title='Toggle Component' onPress={toggleComponent} />
     </View>
   );
 };
@@ -39,12 +72,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  box: {
-    width: 100,
-    height: 100,
-    backgroundColor: 'tomato',
-    marginBottom: 20,
+  animatedComponent: {
+    width: 200,
+    height: 200,
+    backgroundColor: 'coral',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
   },
 });
 
-export default OpacityExample;
+export default Example;

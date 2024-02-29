@@ -4,11 +4,19 @@ import { SvgXml } from 'react-native-svg';
 import { xml as plus } from '@app/assets/plus';
 import { xml as medicine } from '@app/assets/medicine';
 
-export default function RemovedActivity() {
+interface RemovedActivityProps {
+  id: string;
+  onAddActivity: (id: string) => void;
+}
+
+export default function RemovedActivity({
+  id,
+  onAddActivity,
+}: RemovedActivityProps) {
   return (
     <View style={styles.container}>
       <View style={styles.plusIcon}>
-        <SvgXml xml={plus} />
+        <SvgXml xml={plus} onPress={() => onAddActivity(id)} />
       </View>
       <SvgXml xml={medicine} />
     </View>
