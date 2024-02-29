@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-import Log from './screen/Log/Index';
+import Log from '@app/screens/Log';
 
 export default function App() {
   return (
