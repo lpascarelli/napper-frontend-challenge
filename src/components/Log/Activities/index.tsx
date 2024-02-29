@@ -1,39 +1,65 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 
 import Activity from '@app/components/Log/Activities/Activity';
-import { IActivities } from '@app/interfaces';
+import { IActivity } from '@app/interfaces';
 
 interface ActivitiesProps {
-  activities: IActivities[];
+  activities: IActivity[];
   isSavingMode: boolean;
+  onRemoveActivity: (id: string) => void;
 }
 
 export default function Activities({
   activities,
   isSavingMode,
+  onRemoveActivity,
 }: ActivitiesProps) {
+  const opacity = useSharedValue(0);
+  const animatedText = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(opacity.value, { duration: 500 }),
+    };
+  });
+
+  opacity.value = isSavingMode ? 1 : 0;
+
   const activitiesUI = activities.map((item) => (
     <Activity
       key={item.id}
-      title={item.title}
-      description={item.description}
+      activity={item}
       isSavingMode={isSavingMode}
+      onRemoveActivity={onRemoveActivity}
     />
   ));
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {activitiesUI}
-    </ScrollView>
+    <View style={styles.container}>
+      <Animated.Text style={[styles.text, animatedText]}>
+        Your categories
+      </Animated.Text>
+      <View style={styles.activityContainer}>{activitiesUI}</View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     marginTop: 32,
+  },
+  activityContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
     gap: 8,
+  },
+  text: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 16,
+    marginBottom: 12,
   },
 });

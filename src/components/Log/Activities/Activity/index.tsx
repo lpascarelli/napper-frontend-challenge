@@ -11,23 +11,23 @@ import Animated, {
 
 import { xml as nap } from '@app/assets/nap';
 import { xml as minus } from '@app/assets/minus';
+import { IActivity } from '@app/interfaces';
 
 interface ActivityProps {
-  title: string;
-  description: string;
+  activity: IActivity;
   isSavingMode: boolean;
+  onRemoveActivity: (id: string) => void;
 }
 
 export default function Activity({
-  title,
-  description,
+  activity,
   isSavingMode,
+  onRemoveActivity,
 }: ActivityProps) {
-  const opacity = useSharedValue(1);
+  const opacity = useSharedValue(0);
   const rotation = useSharedValue(0);
-  const isShaking = useSharedValue(false);
 
-  const animatedDeleteIcon = useAnimatedStyle(() => {
+  const animateDeleteIcon = useAnimatedStyle(() => {
     return {
       opacity: withTiming(opacity.value, { duration: 500 }),
     };
@@ -39,10 +39,8 @@ export default function Activity({
     };
   });
 
-  opacity.value = isSavingMode ? 1 : 0;
-  isShaking.value = isSavingMode ? false : true;
-
-  if (isShaking.value) {
+  if (isSavingMode) {
+    opacity.value = 1;
     rotation.value = withRepeat(
       withSequence(
         withTiming(-1.5, { duration: 100, easing: Easing.linear }),
@@ -52,6 +50,7 @@ export default function Activity({
       true
     );
   } else {
+    opacity.value = 0;
     rotation.value = withTiming(0, {
       duration: 100,
       easing: Easing.linear,
@@ -60,13 +59,18 @@ export default function Activity({
 
   return (
     <Animated.View style={[styles.container, animateContainer]}>
-      <Animated.View style={[styles.deleteIcon, animatedDeleteIcon]}>
-        <SvgXml xml={minus} width={32} height={32} />
+      <Animated.View style={[styles.deleteIcon, animateDeleteIcon]}>
+        <SvgXml
+          xml={minus}
+          width={32}
+          height={32}
+          onPress={() => onRemoveActivity(activity.id)}
+        />
       </Animated.View>
       <SvgXml xml={nap} width={40} height={40} />
       <View style={styles.text}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.title}>{activity.title}</Text>
+        <Text style={styles.description}>{activity.description}</Text>
       </View>
     </Animated.View>
   );

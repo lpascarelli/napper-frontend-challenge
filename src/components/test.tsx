@@ -1,56 +1,50 @@
-import { View, Button } from 'react-native';
+import React from 'react';
+import { View, Button, StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSequence,
   withTiming,
-  withRepeat,
-  Easing,
 } from 'react-native-reanimated';
 
-const IOSLikeShakeView = () => {
-  // Rotation value for the shake effect
-  const rotation = useSharedValue(0);
+const OpacityExample = () => {
+  // This shared value will hold the opacity value.
+  const opacity = useSharedValue(1);
 
-  // Tracks if the shake animation is active
-  const isShaking = useSharedValue(false);
+  // Function to trigger the animation.
+  const handlePress = () => {
+    // This will animate the opacity to 0 over 500 milliseconds.
+    opacity.value = withTiming(0, { duration: 500 });
+  };
 
-  const animatedStyle = useAnimatedStyle(() => {
+  // Animated styles that depend on the shared value.
+  const animatedStyles = useAnimatedStyle(() => {
     return {
-      transform: [{ rotateZ: `${rotation.value}deg` }],
+      opacity: opacity.value,
     };
   });
 
-  const toggleShake = () => {
-    isShaking.value = !isShaking.value; // Toggle the shaking state
-
-    if (isShaking.value) {
-      // Start rotating slightly from left to right
-      rotation.value = withRepeat(
-        withSequence(
-          withTiming(-2, { duration: 100, easing: Easing.linear }), // Rotate left
-          withTiming(2, { duration: 100, easing: Easing.linear }) // Rotate right
-        ),
-        -1, // Repeat indefinitely
-        true // Reverse the animation on each iteration
-      );
-    } else {
-      // Stop shaking and return to initial rotation
-      rotation.value = withTiming(0, { duration: 100, easing: Easing.linear });
-    }
-  };
-
   return (
-    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <Animated.View
-        style={[
-          { width: 100, height: 100, backgroundColor: 'tomato' },
-          animatedStyle,
-        ]}
-      />
-      <Button title='Toggle Shake' onPress={toggleShake} />
+    <View style={styles.container}>
+      {/* Animated View */}
+      <Animated.View style={[styles.box, animatedStyles]} />
+
+      {/* Button to trigger the animation */}
+      <Button title='Fade Out' onPress={handlePress} />
     </View>
   );
 };
 
-export default IOSLikeShakeView;
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  box: {
+    width: 100,
+    height: 100,
+    backgroundColor: 'tomato',
+    marginBottom: 20,
+  },
+});
+
+export default OpacityExample;
