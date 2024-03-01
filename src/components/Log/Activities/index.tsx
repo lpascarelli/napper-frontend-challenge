@@ -23,11 +23,13 @@ export default function Activities({
 }: ActivitiesProps) {
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(0);
+
   const animatedText = useAnimatedStyle(() => {
     return {
       opacity: withTiming(opacity.value, { duration: 500 }),
     };
   });
+
   const animatedContainer = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: translateY.value }],

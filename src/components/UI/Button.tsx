@@ -21,7 +21,7 @@ export default function Button({ title, onPress, variant }: ButtonProps) {
     variant === 'solid' ? styles['solid-text'] : styles['outline-text'];
 
   return (
-    <Pressable onPress={onPress} style={() => [styles.button, variantStyling]}>
+    <Pressable onPress={onPress} style={[styles.button, variantStyling]}>
       <Text style={textStyling}>{title}</Text>
     </Pressable>
   );

@@ -20,7 +20,7 @@ export default function ActionsBar({
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{text}</Text>
-      <Button variant={variantButton} onPress={onSwitchMode} title={title} />
+      <Button title={title} onPress={onSwitchMode} variant={variantButton} />
     </View>
   );
 }
