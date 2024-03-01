@@ -27,7 +27,7 @@ export default function ActionsBar({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 74,
+    marginTop: 62,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',

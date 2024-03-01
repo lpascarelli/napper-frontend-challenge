@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import ActionsBar from '@app/components/Log/ActionsBar';
 import Activities from '@app/components/Log/Activities';
 import RemovedActivities from '@app/components/Log/RemovedActivities';
 import { IActivity } from '@app/interfaces';
 import * as activitiesJson from 'activities.json';
-
-// import TextButtonTransition from '@app/components/test';
 
 export default function Log() {
   const [isSavingMode, setIsSavingMode] = useState(false);
@@ -56,19 +54,17 @@ export default function Log() {
         isSavingMode={isSavingMode}
         onSwitchMode={switchModeHandler}
       />
-      {isSavingMode && removedActivities.length > 0 && (
-        <RemovedActivities
-          isSavingMode={isSavingMode}
-          removedActivities={removedActivities}
-          onAddActivity={addActivityByIdHandler}
-        />
-      )}
+      <RemovedActivities
+        isSavingMode={isSavingMode}
+        onAddActivity={addActivityByIdHandler}
+        removedActivities={removedActivities}
+      />
       <Activities
         activities={activities}
+        hasRemovedActivities={removedActivities.length > 0}
         isSavingMode={isSavingMode}
         onRemoveActivity={removeActivityByIdHandler}
       />
-      {/* <TextButtonTransition /> */}
     </ScrollView>
   );
 }

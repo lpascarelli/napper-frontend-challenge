@@ -11,45 +11,64 @@ import { IActivity } from '@app/interfaces';
 interface ActivitiesProps {
   activities: IActivity[];
   isSavingMode: boolean;
+  hasRemovedActivities: boolean;
   onRemoveActivity: (id: string) => void;
 }
 
 export default function Activities({
   activities,
   isSavingMode,
+  hasRemovedActivities,
   onRemoveActivity,
 }: ActivitiesProps) {
   const opacity = useSharedValue(0);
+  const translateY = useSharedValue(0);
   const animatedText = useAnimatedStyle(() => {
     return {
       opacity: withTiming(opacity.value, { duration: 500 }),
     };
   });
+  const animatedContainer = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+    };
+  });
 
-  opacity.value = isSavingMode ? 1 : 0;
+  if (isSavingMode && hasRemovedActivities) {
+    opacity.value = 1;
+    translateY.value = withTiming(169, {
+      duration: 500,
+    });
+  } else {
+    opacity.value = 0;
+    translateY.value = withTiming(0, {
+      duration: 500,
+    });
+  }
 
   const activitiesUI = activities.map((item) => (
     <Activity
-      key={item.id}
       activity={item}
       isSavingMode={isSavingMode}
+      key={item.id}
       onRemoveActivity={onRemoveActivity}
     />
   ));
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, animatedContainer]}>
       <Animated.Text style={[styles.text, animatedText]}>
         Your categories
       </Animated.Text>
       <View style={styles.activityContainer}>{activitiesUI}</View>
-    </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 32,
+    position: 'absolute',
+    top: 132,
   },
   activityContainer: {
     flexDirection: 'row',
