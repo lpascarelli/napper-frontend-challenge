@@ -16,7 +16,12 @@ export default function RemovedActivity({
   return (
     <View style={styles.container}>
       <View style={styles.plusIcon}>
-        <SvgXml xml={plus} onPress={() => onAddActivity(id)} />
+        <SvgXml
+          xml={plus}
+          width={24}
+          height={24}
+          onPress={() => onAddActivity(id)}
+        />
       </View>
       <SvgXml xml={medicine} />
     </View>
