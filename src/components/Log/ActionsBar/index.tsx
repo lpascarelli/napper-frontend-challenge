@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text } from 'react-native';
 
 import Button from '@app/components/UI/Button';
-import { EDIT_CATEGORIES, TRACK, SAVE, EDIT } from '@app/constants';
 import { ButtonVariant } from '@app/types';
 
 interface ActionsBarProps {
@@ -13,8 +12,8 @@ export default function ActionsBar({
   isSavingMode,
   onSwitchMode,
 }: ActionsBarProps) {
-  const text = isSavingMode ? EDIT_CATEGORIES : TRACK;
-  const title = isSavingMode ? SAVE : EDIT;
+  const text = isSavingMode ? 'Edit quick categories' : 'Track';
+  const title = isSavingMode ? 'Save' : 'Edit';
   const variantButton: ButtonVariant = isSavingMode ? 'solid' : 'outline';
 
   return (
