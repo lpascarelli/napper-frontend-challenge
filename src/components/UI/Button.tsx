@@ -30,21 +30,24 @@ export default function Button({ title, onPress, variant }: ButtonProps) {
 const styles = StyleSheet.create({
   button: {
     height: 38,
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 40,
   },
   solid: {
-    width: 69,
+    // width: 69,
     backgroundColor: '#7577F3',
+    paddingHorizontal: 16,
   },
   'solid-text': {
     color: 'white',
     fontWeight: '700',
     fontSize: 16,
+    textAlign: 'center',
   },
   outline: {
-    width: 62,
+    // width: 62,
+    paddingHorizontal: 16,
     backgroundColor: 'transparent',
     borderWidth: 1,
   },

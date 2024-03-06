@@ -1,21 +1,56 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 
+import { instance } from '@app/axios';
 import ActionsBar from '@app/components/Log/ActionsBar';
 import Activities from '@app/components/Log/Activities';
+import AddCategory from '@app/components/Log/AddCategory';
 import RemovedActivities from '@app/components/Log/RemovedActivities';
 import { IActivity } from '@app/interfaces';
-import * as activitiesJson from 'activities.json';
 
 export default function Log() {
   const [isSavingMode, setIsSavingMode] = useState(false);
-  const [activities, setActivities] = useState<IActivity[]>(
-    activitiesJson.activities
-  );
+  const [isAdding, setIsAdding] = useState(false);
+  const [activities, setActivities] = useState<IActivity[]>([]);
   const [removedActivities, setRemovedActivities] = useState<IActivity[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      if (!isAdding) {
+        try {
+          const { data } = await instance.get('/categories');
+
+          setActivities(data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    fetchCategories();
+  }, [isAdding]);
 
   const switchModeHandler = () => {
     setIsSavingMode((prevState) => !prevState);
+  };
+
+  const isAddingHandler = (isAddingMode: boolean) => {
+    setIsAdding(isAddingMode);
+  };
+
+  const addCategoryHandler = async (enteredTitle: string) => {
+    try {
+      const response = await instance.post('/categories', {
+        id: new Date().toISOString(),
+        title: enteredTitle,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        setIsAdding(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const removeActivityByIdHandler = (id: string) => {
@@ -48,11 +83,14 @@ export default function Log() {
     setRemovedActivities(updatedRemovedActivities);
   };
 
-  return (
-    <ScrollView style={styles.container}>
+  const logContentUI = isAdding ? (
+    <AddCategory onAddCategory={addCategoryHandler} />
+  ) : (
+    <>
       <ActionsBar
         isSavingMode={isSavingMode}
         onSwitchMode={switchModeHandler}
+        onAddingMode={isAddingHandler}
       />
       <RemovedActivities
         isSavingMode={isSavingMode}
@@ -65,8 +103,10 @@ export default function Log() {
         isSavingMode={isSavingMode}
         onRemoveActivity={removeActivityByIdHandler}
       />
-    </ScrollView>
+    </>
   );
+
+  return <ScrollView style={styles.container}>{logContentUI}</ScrollView>;
 }
 
 const styles = StyleSheet.create({

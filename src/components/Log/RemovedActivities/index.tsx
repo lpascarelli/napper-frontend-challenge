@@ -49,7 +49,7 @@ export default function RemovedActivitiesProps({
 const styles = StyleSheet.create({
   container: {
     opacity: 0,
-    marginTop: 40,
+    marginTop: 24,
   },
   removedActivitiesContainer: {
     flexDirection: 'row',
